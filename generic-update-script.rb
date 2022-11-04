@@ -173,6 +173,8 @@ parser = Dependabot::FileParsers.for_package_manager(package_manager).new(
 
 dependencies = parser.parse
 
+puts "Outdated dependencies"
+
 dependencies.select(&:top_level?).each do |dep|
   #########################################
   # Get update details for the dependency #
@@ -186,35 +188,7 @@ dependencies.select(&:top_level?).each do |dep|
 
   next if checker.up_to_date?
 
-  # requirements_to_unlock =
-  #   if !checker.requirements_unlocked_or_can_be?
-  #     if checker.can_update?(requirements_to_unlock: :none) then :none
-  #     else :update_not_possible
-  #     end
-  #   elsif checker.can_update?(requirements_to_unlock: :own) then :own
-  #   elsif checker.can_update?(requirements_to_unlock: :all) then :all
-  #   else :update_not_possible
-  #   end
-
-  # next if requirements_to_unlock == :update_not_possible
-
-  # updated_deps = checker.updated_dependencies(
-  #   requirements_to_unlock: requirements_to_unlock
-  # )
-
-  #####################################
-  # Generate updated dependency files #
-  #####################################
-  puts "Outdated dependencies"
   puts "  - #{dep.name} #{dep.version}"
-  # updater = Dependabot::FileUpdaters.for_package_manager(package_manager).new(
-  #   dependencies: updated_deps,
-  #   dependency_files: files,
-  #   credentials: credentials,
-  #   options: options,
-  # )
-
-  # updated_files = updater.updated_dependency_files
 
 end
 
