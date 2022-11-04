@@ -205,7 +205,7 @@ dependencies.select(&:top_level?).each do |dep|
   #####################################
   # Generate updated dependency files #
   #####################################
-  print "#{dep.name} #{dep.version} is outdated"
+  print "  - Updating #{dep.name} (from #{dep.version})…"
   updater = Dependabot::FileUpdaters.for_package_manager(package_manager).new(
     dependencies: updated_deps,
     dependency_files: files,
@@ -215,8 +215,24 @@ dependencies.select(&:top_level?).each do |dep|
 
   updated_files = updater.updated_dependency_files
 
+  puts " submitted"
 
+  next unless pull_request
 
+  # Enable GitLab "merge when pipeline succeeds" feature.
+  # Merge requests created and successfully tested will be merge automatically.
+  if ENV["GITLAB_AUTO_MERGE"]
+    g = Gitlab.client(
+      endpoint: source.api_endpoint,
+      private_token: ENV["GITLAB_ACCESS_TOKEN"]
+    )
+    g.accept_merge_request(
+      source.repo,
+      pull_request.iid,
+      merge_when_pipeline_succeeds: true,
+      should_remove_source_branch: true
+    )
+  end
 end
 
 puts "Done"
