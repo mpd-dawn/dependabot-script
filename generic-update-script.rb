@@ -188,7 +188,7 @@ dependencies.select(&:top_level?).each do |dep|
 
   next if checker.up_to_date?
 
-  puts "  - #{dep.name} #{dep.version}"
+  puts "  - #{dep.name} #{dep.version} (latest: #{checker.latest_version})"
 
 end
 
