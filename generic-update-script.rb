@@ -215,40 +215,8 @@ dependencies.select(&:top_level?).each do |dep|
 
   updated_files = updater.updated_dependency_files
 
-  ########################################
-  # Create a pull request for the update #
-  ########################################
-  assignee = (ENV["PULL_REQUESTS_ASSIGNEE"] || ENV["GITLAB_ASSIGNEE_ID"])&.to_i
-  assignees = assignee ? [assignee] : assignee
-  pr_creator = Dependabot::PullRequestCreator.new(
-    source: source,
-    base_commit: commit,
-    dependencies: updated_deps,
-    files: updated_files,
-    credentials: credentials,
-    assignees: assignees,
-    author_details: { name: "Dependabot", email: "no-reply@github.com" },
-    label_language: true,
-  )
-  pull_request = pr_creator.create
-  puts " submitted"
+  puts updated_files
 
-  next unless pull_request
-
-  # Enable GitLab "merge when pipeline succeeds" feature.
-  # Merge requests created and successfully tested will be merge automatically.
-  if ENV["GITLAB_AUTO_MERGE"]
-    g = Gitlab.client(
-      endpoint: source.api_endpoint,
-      private_token: ENV["GITLAB_ACCESS_TOKEN"]
-    )
-    g.accept_merge_request(
-      source.repo,
-      pull_request.iid,
-      merge_when_pipeline_succeeds: true,
-      should_remove_source_branch: true
-    )
-  end
 end
 
 puts "Done"
