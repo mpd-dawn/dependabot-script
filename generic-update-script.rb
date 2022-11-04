@@ -205,7 +205,7 @@ dependencies.select(&:top_level?).each do |dep|
   #####################################
   # Generate updated dependency files #
   #####################################
-  print "  - Updating #{dep.name} (from #{dep.version})…"
+  print "#{dep.name} #{dep.version} is outdated"
   updater = Dependabot::FileUpdaters.for_package_manager(package_manager).new(
     dependencies: updated_deps,
     dependency_files: files,
@@ -215,7 +215,7 @@ dependencies.select(&:top_level?).each do |dep|
 
   updated_files = updater.updated_dependency_files
 
-  puts updated_files
+
 
 end
 
